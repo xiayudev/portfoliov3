@@ -1,0 +1,35 @@
+image: node:20.13.1-alpine
+pipelines:
+  pull-requests:
+    '**':
+      - parallel:
+          steps:
+            - step:
+                name: Lint project
+                caches:
+                  - node
+                script:
+                  - echo 'Running linter'
+                  - npm install
+                  - npm run lint
+            - step:
+                name: Type check project
+                caches:
+                  - node
+                script:
+                  - echo 'Type checking project'
+                  - npm install
+                  - npm run type-check
+            - step:
+                name: Testing project
+                caches:
+                  - node
+                script:
+                  - echo 'Testing project'
+                  - npm install
+                  - npm run test:unit
+      - step:
+          name: Deployment to main
+          deployment: test
+          script:
+            - echo "Deployed to main"
